@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-[#F8FAFC]">
 
 <head>
     <meta charset="UTF-8">
@@ -22,9 +22,9 @@
 
 <body>
     <!-- login page -->
-    <section class="bg-base-200 flex items-center justify-center min-h-screen">
+    <section class="bg-base-200 flex items-center justify-center min-h-screen ">
 
-        <div class="card w-96 bg-base-100 shadow-xl">
+        <div class="card  w-96 bg-base-100 shadow-xl">
             <div class="card-body">
 
                 <div class="flex justify-center">
@@ -34,28 +34,32 @@
                 <p class="text-center text-sm text-[#64748B]">Sign in to manage your issues</p>
 
                 <!-- Username -->
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text font-medium">Username</span>
+                <div class="form-control my-2.5">
+                    <label class="label mb-1.5">
+                        <span class="label-text font-medium text-black">Username</span>
                     </label>
-                    <input type="text" placeholder="Enter Username" class="input input-bordered" />
+                    <input id="input-name" type="text" placeholder="Enter Username" class="input input-bordered" />
                     <p class="text-xs text-primary mt-1">Default: admin</p>
                 </div>
 
                 <!-- Password -->
                 <div class="form-control">
-                    <label class="label">
-                        <span class="label-text text-[#]">Password</span>
+                    <label class="label mb-1.5">
+                        <span class="label-text text-black font-medium">Password</span>
                     </label>
-                    <input type="password" placeholder="Enter Password" class="input input-bordered" />
+                    <input id="input-password" type="password" placeholder="Enter Password"
+                        class="input input-bordered" />
                     <p class="text-xs text-primary mt-1">Default: admin123</p>
                 </div>
 
-                <button class="btn btn-primary mt-4">Sign In</button>
+                <button id="login-btn" class="btn btn-primary mt-4">Sign In</button>
 
                 <div class="divider">OR</div>
+                <div>
+                    <p class="text-center text-sm text-[#64748B]">Demo Credentials:</p>
+                </div>
 
-                <div class="bg-base-200 p-3 rounded text-sm">
+                <div class="bg-base-200 p-5 rounded text-sm text-center">
                     <p><strong>Username:</strong> admin</p>
                     <p><strong>Password:</strong> admin123</p>
                 </div>
@@ -63,6 +67,7 @@
             </div>
         </div>
     </section>
+    <!--end login page -->
 
     <script src="./script/script.js"></script>
 </body>
