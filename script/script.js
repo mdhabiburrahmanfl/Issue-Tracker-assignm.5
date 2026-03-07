@@ -14,7 +14,7 @@ document.getElementById("login-btn")
         if (contactName === "admin" && contactPassword === "admin123") {
             // 3.1 true::> alert > home page
             alert("login success");
-            window.location.assign("/home.html");
+            window.location.href = "./home.html"
         } else {
             // 3.2 false::> alert > return
             alert("login fail");
