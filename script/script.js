@@ -13,7 +13,7 @@ document.getElementById("login-btn")
         // 3. match pin and name
         if (contactName === "admin" && contactPassword === "admin123") {
             // 3.1 true::> alert > home page
-            // alert("login success");
+            alert("login success");
             window.location.assign("/home.html");
         } else {
             // 3.2 false::> alert > return
