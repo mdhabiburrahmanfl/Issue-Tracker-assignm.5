@@ -5,10 +5,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issue Tracker</title>
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+    <!-- icon font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- tailwind and daisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- style added link -->
+    <link rel="stylesheet" href="./style/style.css">
 </head>
 
 <body>
-    <h1>Hello World!</h1>
+    <!-- login page -->
+    <section class="bg-base-200 flex items-center justify-center min-h-screen">
+
+        <div class="card w-96 bg-base-100 shadow-xl">
+            <div class="card-body">
+
+                <div class="flex justify-center">
+                    <img src="./assets/github-logo.png" alt="" class="max-h-24 max-w-24 ">
+                </div>
+                <h2 class="text-center text-2xl font-bold">GitHub Issues Tracker</h2>
+                <p class="text-center text-sm text-[#64748B]">Sign in to manage your issues</p>
+
+                <!-- Username -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">Username</span>
+                    </label>
+                    <input type="text" placeholder="Enter Username" class="input input-bordered" />
+                    <p class="text-xs text-primary mt-1">Default: admin</p>
+                </div>
+
+                <!-- Password -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-[#]">Password</span>
+                    </label>
+                    <input type="password" placeholder="Enter Password" class="input input-bordered" />
+                    <p class="text-xs text-primary mt-1">Default: admin123</p>
+                </div>
+
+                <button class="btn btn-primary mt-4">Sign In</button>
+
+                <div class="divider">OR</div>
+
+                <div class="bg-base-200 p-3 rounded text-sm">
+                    <p><strong>Username:</strong> admin</p>
+                    <p><strong>Password:</strong> admin123</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script src="./script/script.js"></script>
 </body>
 
 </html>
