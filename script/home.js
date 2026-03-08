@@ -1,5 +1,57 @@
+const labelStyles = {
+    "bug": {
+        bg: "bg-[#FEECEC]",
+        border: "border-[#FECACA]",
+        text: "text-[#EF4444]",
+        icon: "./assets/BugDroid.png"
+    },
+
+    "help wanted": {
+        bg: "bg-[#FFF8DB]",
+        border: "border-[#FDE68A]",
+        text: "text-[#F59E0B]",
+        icon: "./assets/help.png"
+    },
+
+    "enhancement": {
+        bg: "bg-[#DCFCE7]",
+        border: "border-[#86EFAC]",
+        text: "text-[#16A34A]",
+        icon: "./assets/Sparkle.png"
+    },
+
+    "documentation": {
+        bg: "bg-[#DBEAFE]",
+        border: "border-[#93C5FD]",
+        text: "text-[#2563EB]",
+        icon: "./assets/book_icon_blue.png"
+    },
+
+    "good first issue": {
+        bg: "bg-[#F3E8FF]",
+        border: "border-[#C4B5FD]",
+        text: "text-[#7C3AED]",
+        icon: "./assets/star_icon_purple (1).png"
+    }
+};
+
+
+
 const createElement = (arr) => {
-    const htmlElements = arr.map((el) => `<span class="btn"> ${el} </span>`);
+
+    const htmlElements = arr.map((el) => {
+
+        const style = labelStyles[el.toLowerCase()] || {};
+
+        return `
+      <span class="flex items-center gap-1 border ${style.border} ${style.bg} ${style.text} rounded-xl text-xs px-2 py-1">
+        <img src="${style.icon}" class="w-3 h-3">
+        ${el}
+      </span>
+    `;
+
+    });
+
     return htmlElements.join("");
 };
 
@@ -177,7 +229,7 @@ displayAllIssue = (word) => {
                         <!-- tags -->
                         <div class="flex gap-2">
 
-                        <div class=""> ${createElement(word.labels)} </div>
+                        <div class="flex gap-0.5"> ${createElement(word.labels)} </div>
 
                         </div>
 
