@@ -22,40 +22,35 @@
 
 <body>
     <!-- nav bar section -->
-    <header class="">
+    <header>
         <div class="navbar bg-base-100 shadow-sm flex sm:flex-row flex-col gap-3 justify-between px-16">
             <div>
                 <a class="btn btn-ghost text-xl"><img src="./assets/github-logo.png" alt=""
-                        class="h-[36px] w-[37px]">GitHub
-                    Issues
-                    Tracker</a>
+                        class="h-[36px] w-[37px]">GitHub Issues Tracker</a>
             </div>
             <div class="flex gap-1 mb-3">
                 <input id="input-search" type="text" placeholder="Search issues..."
                     class="search-box input input-bordered w-24 md:w-auto" />
-                <div class="">
+                <div>
                     <a id="btn-search" class="btn btn-primary">Search</a>
                 </div>
-
             </div>
         </div>
     </header>
 
-    <!-- nav bar section end -->
     <section>
-
         <div id="filter-buttons"
-            class="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]  mt-[60px] mb-4 p-4 w-9/12 mx-auto space-x-1">
+            class="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] mt-[60px] mb-4 p-4 w-9/12 mx-auto space-x-1">
             <button
                 class="issue-all btn btn-primary btn-sm border rounded border-[#E4E4E7] px-8 py-0.5 text-white">All</button>
             <button
-                class="issue-open btn btn-sm border rounded border-[#E4E4E7] px-6 py-0.5 text-[#64748B]">Open</button>
+                class="issue-open btn btn-sm border rounded border-[#E4E4E7] px-6 py-0.5 text-[#000000]">Open</button>
             <button
-                class="issue-closed btn btn-sm border rounded border-[#E4E4E7] px-6 py-0.5 text-[#64748B]">Closed</button>
+                class="issue-closed btn btn-sm border rounded border-[#E4E4E7] px-6 py-0.5 text-[#000000]">Closed</button>
         </div>
-        <div class="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]   mb-4 p-4 w-9/12 mx-auto space-x-1">
-            <div class="flex justify-between sm:flex-row flex-col ">
-                <!-- left side -->
+
+        <div class="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] mb-4 p-4 w-9/12 mx-auto space-x-1">
+            <div class="flex justify-between sm:flex-row flex-col">
                 <div class="flex p-6 gap-2">
                     <div class="bg-[#ECE4FF] rounded-full p-1 flex justify-center items-center w-14 h-14">
                         <img src="./assets/Aperture.png" alt="">
@@ -64,11 +59,9 @@
                         <h2 id="issue-count" class="font-semibold text-xl">50 Issues</h2>
                         <p class="text-[#64748B]">Track and manage your project issues</p>
                     </div>
-
                 </div>
-                <!-- right side -->
-                <div class="flex items-center gap-4 text-sm mr-4 p-4">
 
+                <div class="flex items-center gap-4 text-sm mr-4 p-4">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
                         <span class="text-gray-600">Open</span>
@@ -78,125 +71,22 @@
                         <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
                         <span class="text-gray-600">Closed</span>
                     </div>
-
                 </div>
             </div>
+
             <hr class="text-[#E4E4E7] -mx-4 mb-4">
-            <div id="card-container" class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 ">
 
-                <div class="card bg-white shadow-md border border-gray-200 w-full">
-                    <div class="p-4 border-t-4 border-green-500 rounded-t-lg ">
-
-                        <div class="flex justify-between items-center mb-3">
-
-                            <!-- icon -->
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                <i class="fa-regular fa-circle-dot text-green-500"></i>
-                            </div>
-
-                            <!-- priority -->
-                            <span class="bg-red-100 text-red-500 text-xs px-4 py-1 rounded-full font-medium">
-                                HIGH
-                            </span>
-
-                        </div>
-
-                        <!-- title -->
-                        <h2 class="font-semibold text-gray-800 text-sm mb-2">
-                            Fix Navigation Menu On Mobile Devices
-                        </h2>
-
-                        <!-- description -->
-                        <p class="text-gray-500 text-xs mb-4">
-                            The navigation menu doesn't collapse properly on mobile devices...
-                        </p>
-
-                        <!-- tags -->
-                        <div class="flex gap-2">
-                            <span class="badge badge-outline text-red-500 border-red-300 text-xs bg-[#FEECEC]">
-                                BUG
-                            </span>
-
-                            <span class="badge badge-outline text-orange-500 border-orange-400 text-xs bg-[#FFF8DB]">
-                                HELP WANTED
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <!-- footer -->
-                    <div class="border-t px-4 py-3 text-xs text-gray-500">
-                        <p>#1 by <span class="text-gray-700">john_doe</span></p>
-                        <p>1/15/2024</p>
-                    </div>
-                </div>
-            </div>
+            <!-- Cards will be rendered here by JavaScript -->
+            <div id="card-container" class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4"></div>
         </div>
-
-
     </section>
-    <!-- Open the modal using ID.showModal() method -->
 
+    <!-- Modal content will be rendered here by JavaScript -->
     <dialog id="word_modal" class="modal modal-bottom sm:modal-middle">
-        <div id="details-container" class="modal-box">
-
-            <div class="modal-box max-w-3xl">
-
-                <!-- Title -->
-                <h3 class="text-2xl font-bold text-gray-800 mb-3">
-                    Fix broken image uploads
-                </h3>
-
-                <!-- Status + Meta -->
-                <div class="flex items-center gap-3 text-sm text-gray-500 mb-4">
-                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                        Opened
-                    </span>
-                    <span>Opened by Fahim Ahmed</span>
-                    <span>•</span>
-                    <span>22/02/2026</span>
-                </div>
-
-                <!-- Labels -->
-                <div class="flex gap-2 mb-5">
-                    <span class="badge border-red-300 text-red-500 bg-red-100 gap-1">
-                        🐞 BUG
-                    </span>
-
-                    <span class="badge border-orange-300 text-orange-500 bg-orange-100 gap-1">
-                        🛟 HELP WANTED
-                    </span>
-                </div>
-
-                <!-- Description -->
-                <p class="text-gray-600 mb-6">
-                    The navigation menu doesn't collapse properly on mobile devices.
-                    Need to fix the responsive behavior.
-                </p>
-
-                <!-- Info Box -->
-                <div class="bg-gray-100 rounded-xl p-5 flex justify-between mb-6">
-
-                    <div>
-                        <p class="text-gray-500 text-sm">Assignee:</p>
-                        <p class="font-semibold text-gray-800">Fahim Ahmed</p>
-                    </div>
-
-                    <div>
-                        <p class="text-gray-500 text-sm">Priority:</p>
-                        <span class="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                            HIGH
-                        </span>
-                    </div>
-
-                </div>
-
-            </div>
+        <div id="details-container" class="modal-box"></div>
     </dialog>
 
     <script src="./script/home.js"></script>
 </body>
 
 </html>
-
-
