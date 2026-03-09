@@ -250,21 +250,32 @@ loadLesson();
 
 // search section
 
-document.getElementById("btn-search")
-    .addEventListener("click", () => {
-        const input = document.getElementById("input-search");
-        const searchValue = input.value.trim().toLowerCase();
-        console.log(searchValue);
+const handleSearch = async () => {
+    const input = document.getElementById("input-search");
+    const searchValue = input.value.trim();
 
-        const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
-        fetch(url)
-            .then((res) => res.json())
-            .then((data) => {
-                const allWords = data.data;
-                console.log(allWords);
-                const filterWords = allWords.filter((word) =>
-                    word.title.toLowerCase().includes(searchValue)
-                );
-                displayAllIssue()
-            })
+    if (!searchValue) {
+        loadLesson();
+        return;
+    }
+
+    const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${encodeURIComponent(searchValue)}`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayAllIssue(data.data || []);
+    } catch (error) {
+        console.error("Search failed", error);
+    }
+}
+
+document.getElementById("btn-search")
+    .addEventListener("click", handleSearch)
+
+document.getElementById("input-search")
+    .addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            handleSearch();
+        }
     })
