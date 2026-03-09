@@ -240,37 +240,39 @@ displayAllIssue = (word) => {
         const createDiv = document.createElement("div");
 
         createDiv.innerHTML = `
-        <div onclick="loadWordDetail(${word.id})" class="card  bg-white shadow-md border border-gray-200 w-full">
-                    <div class="p-4 border-t-4 ${word.status === "closed" ? "border-purple-500" : "border-green-500"} rounded-t-lg">
-                        <div class="flex justify-between items-center mb-3">
-                            <div class="w-8 h-8 rounded-full ${word.status === "closed" ? "bg-purple-100" : "bg-green-100"} flex items-center justify-center">
-                                <img src="${word.status === "closed" ? "./assets/Closed- Status .png" : "./assets/Open-Status.png"}" alt="${word.status} status" class="w-4 h-4">
+        <div onclick="loadWordDetail(${word.id})" class="card h-full bg-white shadow-md border border-gray-200 w-full cursor-pointer">
+                    <div class="flex flex-col h-full">
+                        <div class="p-4 border-t-4 ${word.status === "closed" ? "border-purple-500" : "border-green-500"} rounded-t-lg flex-1">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="w-8 h-8 rounded-full ${word.status === "closed" ? "bg-purple-100" : "bg-green-100"} flex items-center justify-center">
+                                    <img src="${word.status === "closed" ? "./assets/Closed- Status .png" : "./assets/Open-Status.png"}" alt="${word.status} status" class="w-4 h-4">
+                                </div>
+
+                                <div class="text-right">
+                                    <p class="text-[10px] uppercase text-gray-500 mb-1">${word.status}</p>
+                                    <span class="${getPriorityStyle(word.priority)} text-xs px-4 py-1 rounded-full font-medium uppercase">
+                                        ${word.priority}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div class="text-right">
-                                <p class="text-[10px] uppercase text-gray-500 mb-1">${word.status}</p>
-                                <span class="${getPriorityStyle(word.priority)} text-xs px-4 py-1 rounded-full font-medium uppercase">
-                                    ${word.priority}
-                                </span>
+                            <h2 class="font-semibold text-gray-800 text-sm mb-2 min-h-[40px]">
+                                ${word.title}
+                            </h2>
+
+                            <p class="text-gray-500 text-xs mb-4 min-h-[60px] line-clamp-3">
+                                ${word.description}
+                            </p>
+
+                            <div class="flex flex-wrap gap-2 min-h-[32px]">
+                                <div class="flex flex-wrap gap-1"> ${createElement(word.labels)} </div>
                             </div>
                         </div>
 
-                        <h2 class="font-semibold text-gray-800 text-sm mb-2">
-                            ${word.title}
-                        </h2>
-
-                        <p class="text-gray-500 text-xs mb-4">
-                            ${word.description}
-                        </p>
-
-                        <div class="flex gap-2">
-                            <div class="flex gap-0.5"> ${createElement(word.labels)} </div>
+                        <div class="border-t px-4 py-3 text-xs text-gray-500 mt-auto">
+                             <p>#${word.id} by <span class="text-gray-700">${word.author}</span></p>
+                             <p>${formatIssueDate(word.createdAt)}</p>
                         </div>
-                    </div>
-
-                    <div class="border-t px-4 py-3 text-xs text-gray-500">
-                         <p>#${word.id} by <span class="text-gray-700">${word.author}</span></p>
-                         <p>${formatIssueDate(word.createdAt)}</p>
                     </div>
                 </div>
         `;
@@ -316,6 +318,7 @@ document.getElementById("input-search")
             handleSearch();
         }
     });
+
 
 
 
