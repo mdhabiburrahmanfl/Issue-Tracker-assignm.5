@@ -10,7 +10,7 @@ const labelStyles = {
         bg: "bg-[#FFF8DB]",
         border: "border-[#FDE68A]",
         text: "text-[#F59E0B]",
-        icon: "./assets/help.png"
+        icon: "./assets/Lifebuoy.png"
     },
 
     "enhancement": {
@@ -58,6 +58,26 @@ const issueCountElement = document.getElementById("issue-count");
 // Update the summary title with the current visible issue count.
 function updateIssueCount(issues) {
     issueCountElement.textContent = `${issues.length} Issues`;
+}
+
+// Format API date into a readable local date.
+function formatIssueDate(dateString) {
+    return new Date(dateString).toLocaleDateString();
+}
+
+// Match priority pill color with HIGH / MEDIUM / LOW from the API.
+function getPriorityStyle(priority) {
+    const currentPriority = priority.toLowerCase();
+
+    if (currentPriority === "high") {
+        return "bg-[#FEE2E2] text-[#EF4444]";
+    }
+
+    if (currentPriority === "medium") {
+        return "bg-[#FEF3C7] text-[#F59E0B]";
+    }
+
+    return "bg-[#E5E7EB] text-[#6B7280]";
 }
 
 // This function only changes the active button style.
@@ -129,54 +149,62 @@ const loadWordDetail = async (id) => {
 
 const displayIssueDetails = (data) => {
     const detailsBox = document.getElementById("details-container");
+    const statusClass = data.status === "closed" ? "bg-purple-500" : "bg-green-500";
+    const assigneeName = data.assignee ? data.assignee : "Unassigned";
+
     detailsBox.innerHTML = `
     <div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3">
-                    ${data.title}
-                </h3>
+        <h3 class="text-2xl font-bold text-gray-800 mb-3">
+            ${data.title}
+        </h3>
 
-                <div class="flex items-center gap-3 text-sm text-gray-500 mb-4">
-                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                        ${data.status}
-                    </span>
-                    <span>Opened by</span><span>${data.author}</span>
-                    <span>•</span>
-                    <span>${data.updatedAt}</span>
-                </div>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-4">
+            <span class="${statusClass} text-white px-3 py-1 rounded-full text-xs font-semibold uppercase">
+                ${data.status}
+            </span>
+            <span>Opened by ${data.author}</span>
+            <span>Created: ${formatIssueDate(data.createdAt)}</span>
+            <span>Updated: ${formatIssueDate(data.updatedAt)}</span>
+        </div>
 
-                <div class="flex gap-2 mb-5">
-                    <span class="badge border-red-300 text-red-500 bg-red-100 gap-1">
-                        🐞 BUG
-                    </span>
+        <div class="flex flex-wrap gap-2 mb-5">
+            ${createElement(data.labels || [])}
+        </div>
 
-                    <span class="badge border-orange-300 text-orange-500 bg-orange-100 gap-1">
-                        🛟 HELP WANTED
-                    </span>
-                </div>
+        <p class="text-gray-600 mb-6">
+            ${data.description}
+        </p>
 
-                <p class="text-gray-600 mb-6">
-                    ${data.description}
-                </p>
+        <div class="bg-gray-100 rounded-xl p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div>
+                <p class="text-gray-500 text-sm">Issue ID</p>
+                <p class="font-semibold text-gray-800">#${data.id}</p>
+            </div>
 
-                <div class="bg-gray-100 rounded-xl p-5 flex justify-between mb-6">
-                    <div>
-                        <p class="text-gray-500 text-sm">Assignee:</p>
-                        <p class="font-semibold text-gray-800">${data.assignee}</p>
-                    </div>
+            <div>
+                <p class="text-gray-500 text-sm">Priority</p>
+                <span class="${getPriorityStyle(data.priority)} inline-block text-xs px-3 py-1 rounded-full font-semibold uppercase">
+                    ${data.priority}
+                </span>
+            </div>
 
-                    <div>
-                        <p class="text-gray-500 text-sm">Priority:</p>
-                        <span class="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                            ${data.priority}
-                        </span>
-                    </div>
-                </div>
+            <div>
+                <p class="text-gray-500 text-sm">Author</p>
+                <p class="font-semibold text-gray-800">${data.author}</p>
+            </div>
 
-                <div class="modal-action">
-                    <form method="dialog">
-                        <button class="btn btn-primary">Close</button>
-                    </form>
-                </div>
+            <div>
+                <p class="text-gray-500 text-sm">Assignee</p>
+                <p class="font-semibold text-gray-800">${assigneeName}</p>
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn btn-primary">Close</button>
+            </form>
+        </div>
+    </div>
     `;
 
     document.getElementById("word_modal").showModal();
@@ -215,13 +243,16 @@ displayAllIssue = (word) => {
         <div onclick="loadWordDetail(${word.id})" class="card  bg-white shadow-md border border-gray-200 w-full">
                     <div class="p-4 border-t-4 ${word.status === "closed" ? "border-purple-500" : "border-green-500"} rounded-t-lg">
                         <div class="flex justify-between items-center mb-3">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                <i class="fa-regular fa-circle-dot text-green-500"></i>
+                            <div class="w-8 h-8 rounded-full ${word.status === "closed" ? "bg-purple-100" : "bg-green-100"} flex items-center justify-center">
+                                <img src="${word.status === "closed" ? "./assets/Closed- Status .png" : "./assets/Open-Status.png"}" alt="${word.status} status" class="w-4 h-4">
                             </div>
 
-                            <span class="bg-red-100 text-red-500 text-xs px-4 py-1 rounded-full font-medium">
-                                ${word.priority}
-                            </span>
+                            <div class="text-right">
+                                <p class="text-[10px] uppercase text-gray-500 mb-1">${word.status}</p>
+                                <span class="${getPriorityStyle(word.priority)} text-xs px-4 py-1 rounded-full font-medium uppercase">
+                                    ${word.priority}
+                                </span>
+                            </div>
                         </div>
 
                         <h2 class="font-semibold text-gray-800 text-sm mb-2">
@@ -238,8 +269,8 @@ displayAllIssue = (word) => {
                     </div>
 
                     <div class="border-t px-4 py-3 text-xs text-gray-500">
-                         <p>#1 by <span class="text-gray-700">john_doe</span></p>
-                         <p>1/15/2024</p>
+                         <p>#${word.id} by <span class="text-gray-700">${word.author}</span></p>
+                         <p>${formatIssueDate(word.createdAt)}</p>
                     </div>
                 </div>
         `;
@@ -285,5 +316,9 @@ document.getElementById("input-search")
             handleSearch();
         }
     });
+
+
+
+
 
 
