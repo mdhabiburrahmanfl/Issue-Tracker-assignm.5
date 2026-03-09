@@ -5,28 +5,24 @@ const labelStyles = {
         text: "text-[#EF4444]",
         icon: "./assets/BugDroid.png"
     },
-
     "help wanted": {
         bg: "bg-[#FFF8DB]",
         border: "border-[#FDE68A]",
         text: "text-[#F59E0B]",
         icon: "./assets/Lifebuoy.png"
     },
-
     "enhancement": {
         bg: "bg-[#DCFCE7]",
         border: "border-[#86EFAC]",
         text: "text-[#16A34A]",
         icon: "./assets/Sparkle.png"
     },
-
     "documentation": {
         bg: "bg-[#DBEAFE]",
         border: "border-[#93C5FD]",
         text: "text-[#2563EB]",
         icon: "./assets/book_icon_blue.png"
     },
-
     "good first issue": {
         bg: "bg-[#F3E8FF]",
         border: "border-[#C4B5FD]",
@@ -34,6 +30,12 @@ const labelStyles = {
         icon: "./assets/star_icon_purple (1).png"
     }
 };
+
+const issueCountElement = document.getElementById("issue-count");
+const cardContainer = document.getElementById("card-container");
+const detailsBox = document.getElementById("details-container");
+const wordModal = document.getElementById("word_modal");
+let allIssuesData = [];
 
 const createElement = (arr) => {
     const htmlElements = arr.map((el) => {
@@ -50,10 +52,23 @@ const createElement = (arr) => {
     return htmlElements.join("");
 };
 
-// Store all issues here after loading from the API.
-// Then we can easily show all, only open, or only closed issues.
-let allIssuesData = [];
-const issueCountElement = document.getElementById("issue-count");
+// Show a loading spinner while cards are loading.
+function renderListLoader() {
+    cardContainer.innerHTML = `
+        <div class="col-span-full py-10 flex justify-center">
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+    `;
+}
+
+// Show a loading spinner inside the modal while details are loading.
+function renderModalLoader() {
+    detailsBox.innerHTML = `
+        <div class="py-10 flex justify-center">
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+    `;
+}
 
 // Update the summary title with the current visible issue count.
 function updateIssueCount(issues) {
@@ -95,11 +110,18 @@ function removeActive(_className) {
 const loadLesson = () => {
     const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
+    // Show spinner while all issues are loading.
+    renderListLoader();
+
     fetch(url)
         .then(res => res.json())
         .then((json) => {
             allIssuesData = json.data || [];
             displayAllIssue(allIssuesData);
+        })
+        .catch((error) => {
+            console.error("Issue load failed", error);
+            cardContainer.innerHTML = `<p class="col-span-full text-center text-red-500 py-10">Failed to load issues.</p>`;
         });
 }
 
@@ -120,35 +142,25 @@ document.getElementById("filter-buttons").addEventListener("click", (event) => {
     }
 })
 
-// {
-// "status": "success",
-// "message": "Issue fetched successfully",
-// "data": {
-// "id": 33,
-// "title": "Add bulk operations support",
-// "description": "Allow users to perform bulk actions like delete, update status on multiple items at once.",
-// "status": "open",
-// "labels": [
-// "enhancement"
-// ],
-// "priority": "low",
-// "author": "bulk_barry",
-// "assignee": "",
-// "createdAt": "2024-02-02T10:00:00Z",
-// "updatedAt": "2024-02-02T10:00:00Z"
-// }
-// }
-
 // modal
 const loadWordDetail = async (id) => {
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
-    const res = await fetch(url);
-    const details = await res.json();
-    displayIssueDetails(details.data);
+
+    // Open the modal first and show spinner until API data arrives.
+    wordModal.showModal();
+    renderModalLoader();
+
+    try {
+        const res = await fetch(url);
+        const details = await res.json();
+        displayIssueDetails(details.data);
+    } catch (error) {
+        console.error("Issue details failed", error);
+        detailsBox.innerHTML = `<p class="text-center text-red-500 py-10">Failed to load issue details.</p>`;
+    }
 };
 
 const displayIssueDetails = (data) => {
-    const detailsBox = document.getElementById("details-container");
     const statusClass = data.status === "closed" ? "bg-purple-500" : "bg-green-500";
     const assigneeName = data.assignee ? data.assignee : "Unassigned";
 
@@ -206,32 +218,10 @@ const displayIssueDetails = (data) => {
         </div>
     </div>
     `;
-
-    document.getElementById("word_modal").showModal();
 }
 
-// "status": "success",
-// "message": "Issues fetched successfully",
-// "data": [
-// {
-// "id": 1,
-// "title": "Fix navigation menu on mobile devices",
-// "description": "The navigation menu doesn't collapse properly on mobile devices. Need to fix the responsive behavior.",
-// "status": "open",
-// "labels": [
-// "bug",
-// "help wanted"
-// ],
-// "priority": "high",
-// "author": "john_doe",
-// "assignee": "jane_smith",
-// "createdAt": "2024-01-15T10:30:00Z",
-// "updatedAt": "2024-01-15T10:30:00Z"
-// },
-
 displayAllIssue = (word) => {
-    const allIssues = document.getElementById("card-container");
-    allIssues.innerHTML = "";
+    cardContainer.innerHTML = "";
 
     // Show the current visible issue count in the title.
     updateIssueCount(word);
@@ -241,43 +231,43 @@ displayAllIssue = (word) => {
 
         createDiv.innerHTML = `
         <div onclick="loadWordDetail(${word.id})" class="card h-full bg-white shadow-md border border-gray-200 w-full cursor-pointer">
-                    <div class="flex flex-col h-full">
-                        <div class="p-4 border-t-4 ${word.status === "closed" ? "border-purple-500" : "border-green-500"} rounded-t-lg flex-1">
-                            <div class="flex justify-between items-center mb-3">
-                                <div class="w-8 h-8 rounded-full ${word.status === "closed" ? "bg-purple-100" : "bg-green-100"} flex items-center justify-center">
-                                    <img src="${word.status === "closed" ? "./assets/Closed- Status .png" : "./assets/Open-Status.png"}" alt="${word.status} status" class="w-4 h-4">
-                                </div>
-
-                                <div class="text-right">
-                                    <p class="text-[10px] uppercase text-gray-500 mb-1">${word.status}</p>
-                                    <span class="${getPriorityStyle(word.priority)} text-xs px-4 py-1 rounded-full font-medium uppercase">
-                                        ${word.priority}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <h2 class="font-semibold text-gray-800 text-sm mb-2 min-h-[40px]">
-                                ${word.title}
-                            </h2>
-
-                            <p class="text-gray-500 text-xs mb-4 min-h-[60px] line-clamp-3">
-                                ${word.description}
-                            </p>
-
-                            <div class="flex flex-wrap gap-2 min-h-[32px]">
-                                <div class="flex flex-wrap gap-1"> ${createElement(word.labels)} </div>
-                            </div>
+            <div class="flex flex-col h-full">
+                <div class="p-4 border-t-4 ${word.status === "closed" ? "border-purple-500" : "border-green-500"} rounded-t-lg flex-1">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="w-8 h-8 rounded-full ${word.status === "closed" ? "bg-purple-100" : "bg-green-100"} flex items-center justify-center">
+                            <img src="${word.status === "closed" ? "./assets/Closed- Status .png" : "./assets/Open-Status.png"}" alt="${word.status} status" class="w-4 h-4">
                         </div>
 
-                        <div class="border-t px-4 py-3 text-xs text-gray-500 mt-auto">
-                             <p>#${word.id} by <span class="text-gray-700">${word.author}</span></p>
-                             <p>${formatIssueDate(word.createdAt)}</p>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase text-gray-500 mb-1">${word.status}</p>
+                            <span class="${getPriorityStyle(word.priority)} text-xs px-4 py-1 rounded-full font-medium uppercase">
+                                ${word.priority}
+                            </span>
                         </div>
                     </div>
+
+                    <h2 class="font-semibold text-gray-800 text-sm mb-2 min-h-[40px]">
+                        ${word.title}
+                    </h2>
+
+                    <p class="text-gray-500 text-xs mb-4 min-h-[60px] line-clamp-3">
+                        ${word.description}
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 min-h-[32px]">
+                        <div class="flex flex-wrap gap-1"> ${createElement(word.labels)} </div>
+                    </div>
                 </div>
+
+                <div class="border-t px-4 py-3 text-xs text-gray-500 mt-auto">
+                    <p>#${word.id} by <span class="text-gray-700">${word.author}</span></p>
+                    <p>${formatIssueDate(word.createdAt)}</p>
+                </div>
+            </div>
+        </div>
         `;
 
-        allIssues.append(createDiv);
+        cardContainer.append(createDiv);
     })
 }
 
@@ -296,6 +286,9 @@ const handleSearch = async () => {
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${encodeURIComponent(searchValue)}`;
 
     try {
+        // Show spinner while search result is loading.
+        renderListLoader();
+
         const res = await fetch(url);
         const data = await res.json();
 
@@ -306,6 +299,7 @@ const handleSearch = async () => {
         removeActive("issue-all");
     } catch (error) {
         console.error("Search failed", error);
+        cardContainer.innerHTML = `<p class="col-span-full text-center text-red-500 py-10">Search failed.</p>`;
     }
 }
 
@@ -318,10 +312,3 @@ document.getElementById("input-search")
             handleSearch();
         }
     });
-
-
-
-
-
-
-
