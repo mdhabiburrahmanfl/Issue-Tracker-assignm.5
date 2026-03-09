@@ -35,12 +35,8 @@ const labelStyles = {
     }
 };
 
-
-
 const createElement = (arr) => {
-
     const htmlElements = arr.map((el) => {
-
         const style = labelStyles[el.toLowerCase()] || {};
 
         return `
@@ -49,40 +45,60 @@ const createElement = (arr) => {
         ${el}
       </span>
     `;
-
     });
 
     return htmlElements.join("");
 };
 
+// Store all issues here after loading from the API.
+// Then we can easily show all, only open, or only closed issues.
+let allIssuesData = [];
+const issueCountElement = document.getElementById("issue-count");
 
-
-document.getElementById("filter-buttons").addEventListener("click", (event) => {
-    if (event.target.classList.contains("issue-all")) {
-        removeActive("issue-all")
-    }
-    else if (event.target.classList.contains("issue-open")) {
-        removeActive("issue-open")
-    } else if (event.target.classList.contains("issue-closed")) {
-        removeActive("issue-closed")
-    }
-})
-
-function removeActive(_className) {
-    const arr = ["issue-all", "issue-open", "issue-closed"]
-    for (const cl of arr) {
-        document.querySelector(`.${cl}`).classList.remove("btn-primary", "text-white")
-    }
-    document.querySelector(`.${_className}`).classList.add("btn-primary", "text-white")
+// Update the summary title with the current visible issue count.
+function updateIssueCount(issues) {
+    issueCountElement.textContent = `${issues.length} Issues`;
 }
 
+// This function only changes the active button style.
+function removeActive(_className) {
+    const arr = ["issue-all", "issue-open", "issue-closed"];
+
+    for (const cl of arr) {
+        document.querySelector(`.${cl}`).classList.remove("btn-primary", "text-white");
+    }
+
+    document.querySelector(`.${_className}`).classList.add("btn-primary", "text-white");
+}
+
+// Load all issues from the API and save them in allIssuesData.
 const loadLesson = () => {
-    const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues"
+    const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
+
     fetch(url)
         .then(res => res.json())
-        .then((json) => displayAllIssue(json.data));
-
+        .then((json) => {
+            allIssuesData = json.data || [];
+            displayAllIssue(allIssuesData);
+        });
 }
+
+// Filter data when the user clicks All / Open / Closed.
+document.getElementById("filter-buttons").addEventListener("click", (event) => {
+    if (event.target.classList.contains("issue-all")) {
+        removeActive("issue-all");
+        displayAllIssue(allIssuesData);
+    }
+    else if (event.target.classList.contains("issue-open")) {
+        removeActive("issue-open");
+        const openIssues = allIssuesData.filter((issue) => issue.status === "open");
+        displayAllIssue(openIssues);
+    } else if (event.target.classList.contains("issue-closed")) {
+        removeActive("issue-closed");
+        const closedIssues = allIssuesData.filter((issue) => issue.status === "closed");
+        displayAllIssue(closedIssues);
+    }
+})
 
 // {
 // "status": "success",
@@ -110,16 +126,15 @@ const loadWordDetail = async (id) => {
     const details = await res.json();
     displayIssueDetails(details.data);
 };
+
 const displayIssueDetails = (data) => {
     const detailsBox = document.getElementById("details-container");
     detailsBox.innerHTML = `
     <div>
-                <!-- Title -->
                 <h3 class="text-2xl font-bold text-gray-800 mb-3">
                     ${data.title}
                 </h3>
 
-                <!-- Status + Meta -->
                 <div class="flex items-center gap-3 text-sm text-gray-500 mb-4">
                     <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
                         ${data.status}
@@ -129,7 +144,6 @@ const displayIssueDetails = (data) => {
                     <span>${data.updatedAt}</span>
                 </div>
 
-                <!-- Labels -->
                 <div class="flex gap-2 mb-5">
                     <span class="badge border-red-300 text-red-500 bg-red-100 gap-1">
                         🐞 BUG
@@ -140,14 +154,11 @@ const displayIssueDetails = (data) => {
                     </span>
                 </div>
 
-                <!-- Description -->
                 <p class="text-gray-600 mb-6">
                     ${data.description}
                 </p>
 
-                <!-- Info Box -->
                 <div class="bg-gray-100 rounded-xl p-5 flex justify-between mb-6">
-
                     <div>
                         <p class="text-gray-500 text-sm">Assignee:</p>
                         <p class="font-semibold text-gray-800">${data.assignee}</p>
@@ -159,18 +170,17 @@ const displayIssueDetails = (data) => {
                             ${data.priority}
                         </span>
                     </div>
-
                 </div>
-    <div class="modal-action">
-        <form method="dialog">
-            <button class="btn btn-primary">Close</button>
-        </form>
-    </div>
-    
+
+                <div class="modal-action">
+                    <form method="dialog">
+                        <button class="btn btn-primary">Close</button>
+                    </form>
+                </div>
     `;
+
     document.getElementById("word_modal").showModal();
 }
-
 
 // "status": "success",
 // "message": "Issues fetched successfully",
@@ -191,65 +201,56 @@ const displayIssueDetails = (data) => {
 // "updatedAt": "2024-01-15T10:30:00Z"
 // },
 
-
 displayAllIssue = (word) => {
     const allIssues = document.getElementById("card-container");
     allIssues.innerHTML = "";
+
+    // Show the current visible issue count in the title.
+    updateIssueCount(word);
+
     word.forEach((word) => {
-        const createDiv = document.createElement("div")
+        const createDiv = document.createElement("div");
 
         createDiv.innerHTML = `
         <div onclick="loadWordDetail(${word.id})" class="card  bg-white shadow-md border border-gray-200 w-full">
-                    <div class="p-4 border-t-4 border-green-500 rounded-t-lg">
-
+                    <div class="p-4 border-t-4 ${word.status === "closed" ? "border-purple-500" : "border-green-500"} rounded-t-lg">
                         <div class="flex justify-between items-center mb-3">
-
-                            <!-- icon -->
                             <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                                 <i class="fa-regular fa-circle-dot text-green-500"></i>
                             </div>
 
-                            <!-- priority -->
                             <span class="bg-red-100 text-red-500 text-xs px-4 py-1 rounded-full font-medium">
                                 ${word.priority}
                             </span>
-
                         </div>
 
-                        <!-- title -->
                         <h2 class="font-semibold text-gray-800 text-sm mb-2">
                             ${word.title}
                         </h2>
 
-                        <!-- description -->
                         <p class="text-gray-500 text-xs mb-4">
                             ${word.description}
                         </p>
 
-                        <!-- tags -->
                         <div class="flex gap-2">
-
-                        <div class="flex gap-0.5"> ${createElement(word.labels)} </div>
-
+                            <div class="flex gap-0.5"> ${createElement(word.labels)} </div>
                         </div>
+                    </div>
 
-                    </div >
-
-                    
-                     <div class="border-t px-4 py-3 text-xs text-gray-500">
+                    <div class="border-t px-4 py-3 text-xs text-gray-500">
                          <p>#1 by <span class="text-gray-700">john_doe</span></p>
                          <p>1/15/2024</p>
-                     </div>
-                </div >
-        `
+                    </div>
+                </div>
+        `;
+
         allIssues.append(createDiv);
     })
 }
+
 loadLesson();
 
-
-// search section
-
+// Search using the required API endpoint.
 const handleSearch = async () => {
     const input = document.getElementById("input-search");
     const searchValue = input.value.trim();
@@ -264,18 +265,25 @@ const handleSearch = async () => {
     try {
         const res = await fetch(url);
         const data = await res.json();
-        displayAllIssue(data.data || []);
+
+        // Save search result in allIssuesData too.
+        // This makes the Open / Closed buttons work after searching.
+        allIssuesData = data.data || [];
+        displayAllIssue(allIssuesData);
+        removeActive("issue-all");
     } catch (error) {
         console.error("Search failed", error);
     }
 }
 
 document.getElementById("btn-search")
-    .addEventListener("click", handleSearch)
+    .addEventListener("click", handleSearch);
 
 document.getElementById("input-search")
     .addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
             handleSearch();
         }
-    })
+    });
+
+
